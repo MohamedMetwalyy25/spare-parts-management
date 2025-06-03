@@ -104,4 +104,5 @@ def to_order():
     return render_template("to_order.html", data=low_stock.to_dict(orient='records'))
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(host='0.0.0.0', port=10000)
+
