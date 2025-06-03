@@ -1,0 +1,39 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Top Issued Parts</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container mt-5">
+        <h2 class="mb-4">Top Issued Parts</h2>
+        <a href="/" class="btn btn-secondary mb-3">⬅ Back to Inventory</a>
+        {% if data %}
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Part Number</th>
+                        <th>Part Name</th>
+                        <th>Total Issued</th>
+                        <th>Last Issued Date</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for row in data %}
+                    <tr>
+                        <td>{{ row["Part Number"] }}</td>
+                        <td>{{ row["Part Name"] }}</td>
+                        <td>{{ row["Total Issued"] }}</td>
+                        <td>{{ row["Last Issued Date"] }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <div class="alert alert-info">No data available.</div>
+        {% endif %}
+    </div>
+</body>
+</html>

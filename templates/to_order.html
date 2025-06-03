@@ -1,0 +1,45 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Items to Order</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container mt-5">
+        <h2 class="mb-4">Items to Order (Below Min Stock)</h2>
+        <a href="/" class="btn btn-secondary mb-3">⬅ Back to Inventory</a>
+        {% if data %}
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Part Number</th>
+                        <th>Part Name</th>
+                        <th>Quantity</th>
+                        <th>Min Stock</th>
+                        <th>Unit</th>
+                        <th>Machine</th>
+                        <th>Note</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for row in data %}
+                    <tr>
+                        <td>{{ row["Part Number"] }}</td>
+                        <td>{{ row["Part Name"] }}</td>
+                        <td>{{ row["Quantity"] }}</td>
+                        <td>{{ row["Min Stock"] }}</td>
+                        <td>{{ row["Unit"] }}</td>
+                        <td>{{ row["Machine"] }}</td>
+                        <td>{{ row["Note"] }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <div class="alert alert-info">All stock levels are OK.</div>
+        {% endif %}
+    </div>
+</body>
+</html>

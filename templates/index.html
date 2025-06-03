@@ -1,0 +1,143 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Spare Parts Inventory</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+<div class="container py-4">
+    <h2 class="mb-4">Fakieh Poultry Farms - Spare Parts Inventory</h2>
+{% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+    <div class="mt-2">
+    {% for category, message in messages %}
+      <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+        {{ message }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      </div>
+    {% endfor %}
+    </div>
+  {% endif %}
+{% endwith %}
+
+    <div class="mb-3">
+        <a href="/top-issued" class="btn btn-warning me-2">Top Issued</a>
+        <a href="/to-order" class="btn btn-danger">Items to Order</a>
+    </div>
+
+    <form method="POST" action="/add" class="row g-3 mb-4">
+        <div class="col-md-2">
+            <input type="text" name="part_number" class="form-control" placeholder="Part Number" required id="part_number">
+        </div>
+        <div class="col-md-2">
+            <input type="text" name="part_name" class="form-control" placeholder="Part Name" required id="part_name">
+        </div>
+        <div class="col-md-1">
+            <input type="number" name="quantity" class="form-control" placeholder="Quantity" required id="quantity">
+        </div>
+        <div class="col-md-1">
+            <input type="number" name="min_stock" class="form-control" placeholder="Min Stock" id="min_stock">
+        </div>
+        <div class="col-md-1">
+            <input type="text" name="unit" class="form-control" placeholder="Unit" id="unit">
+        </div>
+        <div class="col-md-2">
+            <input type="text" name="machine" class="form-control" placeholder="Machine" id="machine">
+        </div>
+        <div class="col-md-2">
+            <input type="text" name="note" class="form-control" placeholder="Note" id="note">
+        </div>
+        <div class="col-md-1 text-end">
+            <button type="submit" class="btn btn-primary">Add Part</button>
+        </div>
+    </form>
+
+    <form method="POST" action="/issue" class="row g-3 mb-4">
+        <div class="col-md-5">
+            <input type="text" class="form-control" name="part_number" placeholder="Part Number to Issue" required id="part_number">
+        </div>
+        <div class="col-md-5">
+            <input type="number" class="form-control" name="quantity" placeholder="Quantity" required id="quantity">
+        </div>
+        <div class="col-md-2 text-end">
+            <button type="submit" class="btn btn-warning">Issue Part</button>
+        </div>
+    </form>
+
+    <form method="GET" action="/search" class="row g-3 mb-4">
+        <div class="col-md-10">
+            <input type="text" name="keyword" class="form-control" placeholder="Search by Part Number, Name, or Machine">
+        </div>
+        <div class="col-md-2 text-end">
+            <button type="submit" class="btn btn-secondary">Search</button>
+        </div>
+    </form>
+
+    <h4>Inventory</h4>
+    {% if data %}
+    <table class="table table-bordered table-striped">
+        <thead class="table-dark">
+        <tr>
+            <th>Part Number</th>
+            <th>Part Name</th>
+            <th>Quantity</th>
+            <th>Min Stock</th>
+            <th>Unit</th>
+            <th>Machine</th>
+            <th>Note</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for row in data %}
+        <tr class="{% if row['Low Stock'] %}table-danger{% endif %}">
+            <td>{{ row["Part Number"] }}</td>
+            <td>{{ row["Part Name"] }}</td>
+            <td>{{ row["Quantity"] }}</td>
+            <td>{{ row["Min Stock"] }}</td>
+            <td>{{ row["Unit"] }}</td>
+            <td>{{ row["Machine"] }}</td>
+            <td>{{ row["Note"] }}</td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <p class="text-muted">No items to display. Try searching above.</p>
+    {% endif %}
+</div>
+
+<script>
+function fetchPartInfo() {
+    const partNumber = document.getElementById('part_number').value;
+    const partName = document.getElementById('part_name').value;
+
+    fetch('/get_part_info', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ part_number: partNumber, part_name: partName }),
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data) {
+            if (data.part_name) document.getElementById('part_name').value = data.part_name;
+            if (data.quantity !== undefined) document.getElementById('quantity').value = data.quantity;
+            if (data.min_stock !== undefined) document.getElementById('min_stock').value = data.min_stock;
+            if (data.unit) document.getElementById('unit').value = data.unit;
+            if (data.machine) document.getElementById('machine').value = data.machine;
+            if (data.note) document.getElementById('note').value = data.note;
+        }
+    });
+}
+
+document.addEventListener('DOMContentLoaded', function () {
+    document.getElementById('part_number').addEventListener('blur', fetchPartInfo);
+    document.getElementById('part_name').addEventListener('blur', fetchPartInfo);
+});
+</script>
+
+</body>
+</html>

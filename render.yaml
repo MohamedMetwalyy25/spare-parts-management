@@ -1,0 +1,7 @@
+services:
+- type: web
+  name: spare-parts-view
+  env: python
+  plan: free
+  buildCommand: ""
+  startCommand: "python app_view_only_clean.py"
